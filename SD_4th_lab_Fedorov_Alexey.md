@@ -1,4 +1,4 @@
-# Lab 4: SIEM
+# SD Lab 4: SIEM
 
 ## Completed by Fedorov Alexey (tg: @ullibniss)
 

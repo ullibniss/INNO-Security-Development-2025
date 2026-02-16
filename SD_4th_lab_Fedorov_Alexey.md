@@ -30,10 +30,18 @@ I've chosen `Wazuh` SIEM, because it was recommended.
 
 ### Wazuh deployment
 
-Firstly, I need to deploy `Wazuh`. I will use `docker` for this purpose. Let's clone docker repository.
+Firstly, I need to deploy `Wazuh`. I will use installation script from documentation
 
 ```
-git clone https://github.com/wazuh/wazuh-docker.git -b v4.11.1
+curl -sO https://packages.wazuh.com/4.14/wazuh-install.sh
+sudo bash wazuh-install.sh -a
 ```
 
+So, i installed Wazuh. Now i can open it in browser.
+
+<img width="3104" height="1054" alt="image" src="https://github.com/user-attachments/assets/b7682156-77ab-453c-b4e1-69330e02dd6f" />
+
+Let's connect devices for our SIEM.
+
+### Connecting Ubuntu Linux
 

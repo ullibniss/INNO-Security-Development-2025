@@ -78,25 +78,7 @@ The following DFDs use standard notation: rectangles for external entities, circ
 
 ### DFD 1: User Authentication & Profile Access
 
-```
-                          ┌─────────────────── Trust Boundary (Internet) ───────────────────┐
-                          │                                                                  │
-  ┌──────────┐            │   ┌──────────────────┐         ┌──────────────┐                  │
-  │          │  1. Login   │   │                  │ 3. Query│              │                  │
-  │   User   │──request───│──►│   App Server     │────────►│   Database   │                  │
-  │ (Browser)│  (HTTPS)   │   │   (Auth Logic)   │◄────────│              │                  │
-  │          │◄───────────│───│                  │ 4. User  │              │                  │
-  └──────────┘ 2. Session │   └──────────────────┘  data   └──────────────┘                  │
-               token /    │          │                                                       │
-               profile    │          │ 5. Profile view                                       │
-               data       │          │    request                                            │
-                          │          ▼                                                       │
-                          │   ┌──────────────────┐                                           │
-                          │   │  Profile data     │                                           │
-                          │   │  returned to user │                                           │
-                          │   └──────────────────┘                                           │
-                          └──────────────────────────────────────────────────────────────────┘
-```
+<img width="1914" height="958" alt="image" src="https://github.com/user-attachments/assets/c38cc176-51af-46be-abd6-693ffb00a4a7" />
 
 **Flow Description:**
 
@@ -111,39 +93,7 @@ The following DFDs use standard notation: rectangles for external entities, circ
 
 ### DFD 2: Video Upload & Processing
 
-```
-                   ┌──── Trust Boundary (Internet) ────┐
-                   │                                    │
- ┌──────────┐      │   ┌────────────────┐               │
- │          │ 1.   │   │                │               │
- │   User   │─Upload──►│  App Server    │               │
- │ (Browser)│ video │   │                │               │
- │          │(HTTPS)│   └───────┬────────┘               │
- └──────────┘      │           │                         │
-                   └───────────┼─────────────────────────┘
-                               │
-              ┌────────────────┼──── Trust Boundary (Internal Network) ────────────────┐
-              │                │                                                       │
-              │                ▼                                                       │
-              │  2. Store   ┌──────────────┐   3. Enqueue   ┌─────────────────────┐    │
-              │  metadata   │              │   transcode     │                     │    │
-              │  ──────────►│   Database   │   task          │  Video Processing   │    │
-              │             │              │ ───────────────►│      Queue          │    │
-              │             └──────────────┘                 │                     │    │
-              │                                              └──────────┬──────────┘    │
-              │                                                         │               │
-              │                                              4. Dequeue │               │
-              │                                                 task    │               │
-              │                                                         ▼               │
-              │                                              ┌─────────────────────┐    │
-              │         ┌──────────────────────┐             │  Video Upload       │    │
-              │         │                      │◄────────────│  Servers            │    │
-              │         │  Video Object Store  │ 5. Store    │  (Transcoding)      │    │
-              │         │                      │  transcoded └─────────────────────┘    │
-              │         └──────────────────────┘  files                                 │
-              │                                                                         │
-              └─────────────────────────────────────────────────────────────────────────┘
-```
+<img width="1668" height="1296" alt="image" src="https://github.com/user-attachments/assets/d131cf01-6e96-4613-9bc9-439e3650bd6e" />
 
 **Flow Description:**
 
@@ -159,42 +109,7 @@ The following DFDs use standard notation: rectangles for external entities, circ
 
 ### DFD 3: Video Search & Streaming
 
-```
-                   ┌──── Trust Boundary (Internet) ────┐
-                   │                                    │
- ┌──────────┐      │   ┌────────────────┐               │
- │          │ 1.   │   │                │               │
- │   User   │─Search──►│  App Server    │               │
- │ (Browser)│ query │   │                │               │
- │          │(HTTPS)│   └───────┬────────┘               │
- │          │      │           │                         │
- │          │      │    2. Query│                         │
- │          │      │    DB for │                         │
- │          │      │    matching│videos                   │
- │          │      │           ▼                         │
- │          │      │   ┌──────────────┐                  │
- │          │      │   │   Database   │                  │
- │          │      │   └──────┬───────┘                  │
- │          │      │          │                          │
- │          │◄─────│──────────┘                          │
- │          │ 3. Search results                          │
- │          │  (metadata list)                           │
- │          │      │                                     │
- │          │ 4.   │   ┌────────────────┐                │
- │          │─Stream──►│  App Server    │                │
- │          │request│   │  (or CDN)     │                │
- │          │      │   └───────┬────────┘                │
- │          │      │           │                         │
- │          │      │    5. Fetch│video file               │
- │          │      │           ▼                         │
- │          │      │   ┌──────────────────────┐          │
- │          │      │   │ Video Object Store   │          │
- │          │      │   └──────────┬───────────┘          │
- │          │◄─────│──────────────┘                      │
- │          │ 6. Video stream                            │
- └──────────┘      │                                     │
-                   └─────────────────────────────────────┘
-```
+<img width="1224" height="1164" alt="image" src="https://github.com/user-attachments/assets/a4e00bfd-b2c2-4719-8873-ba0aad564ce1" />
 
 **Flow Description:**
 
@@ -211,27 +126,7 @@ The following DFDs use standard notation: rectangles for external entities, circ
 
 ### DFD 4: Commenting on a Video
 
-```
-                   ┌──── Trust Boundary (Internet) ────┐
-                   │                                    │
- ┌──────────┐      │   ┌────────────────┐               │
- │          │ 1.   │   │                │               │
- │   User   │─POST ──►│  App Server    │               │
- │ (Browser)│comment│   │ (Validation &  │               │
- │          │(HTTPS)│   │  Auth check)   │               │
- │          │      │   └───────┬────────┘               │
- │          │      │           │                         │
- │          │      │    2. Store│comment                  │
- │          │      │           ▼                         │
- │          │      │   ┌──────────────┐                  │
- │          │      │   │   Database   │                  │
- │          │      │   └──────┬───────┘                  │
- │          │◄─────│──────────┘                          │
- │          │ 3. Confirmation                            │
- │          │  + updated comments                        │
- └──────────┘      │                                     │
-                   └─────────────────────────────────────┘
-```
+<img width="1326" height="716" alt="image" src="https://github.com/user-attachments/assets/d1f05d00-ec77-45d5-89f8-a6946e207e3e" />
 
 **Flow Description:**
 

@@ -120,3 +120,12 @@ As we can see, Wazuh rules detected bruteforce and windows locked account:
 
 ## c. CVEs detection
 
+I started with setting up vulnerability detector
+
+<img width="1136" height="942" alt="image" src="https://github.com/user-attachments/assets/c321bb95-5c6f-4315-8339-2c0c6ad57419" />
+
+After manager reboot, scan is started:
+
+<img width="2110" height="132" alt="image" src="https://github.com/user-attachments/assets/7a81d653-cc1b-4f79-a58f-770925c9e665" />
+
+

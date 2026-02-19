@@ -102,3 +102,21 @@ Bruteforce was detected:
 
 ### Windows 10
 
+Unfortunately, I installed home version of Windows, because of this there no RDP. I used SAMBA instead. I turned it on and configured user:
+
+<img width="884" height="142" alt="image" src="https://github.com/user-attachments/assets/79528adc-333c-4d2c-ae5a-767a82dbe81e" />
+
+I also implemented script for bruteforce^
+
+<img width="1158" height="282" alt="image" src="https://github.com/user-attachments/assets/a8d6d0a5-462f-420e-a209-8bdd2a3121a0" />
+
+Let's execute:
+
+<img width="1066" height="446" alt="image" src="https://github.com/user-attachments/assets/0e33e7c3-57c6-46e7-9dd8-b710a49c1d67" />
+
+As we can see, Wazuh rules detected bruteforce and windows locked account:
+
+<img width="3114" height="1708" alt="image" src="https://github.com/user-attachments/assets/7ba38e0b-e0a6-45a7-a166-26be5cd810a8" />
+
+## c. CVEs detection
+

@@ -1,4 +1,4 @@
-# SD Lab 4: SIEM
+<img width="1930" height="342" alt="image" src="https://github.com/user-attachments/assets/4a3f8904-1244-445a-8b4f-86b9bf31b8b4" /># SD Lab 4: SIEM
 
 ## Completed by Fedorov Alexey (tg: @ullibniss)
 
@@ -24,7 +24,7 @@ I've chosen `Wazuh` SIEM, because it was recommended.
 
 ## 1.b Provide 3 advantages of open source solutions and how do these vendors actually make money?
 
-## Task 2 - Setup infrastructure
+# Task 2 - Setup infrastructure
 
 ## 2.a. Configure a SIEM solution with 3(or more) unique devices. e.g Windows, Linux and a Network device. Can you view log data from each connected device? If yes show this.
 
@@ -61,7 +61,7 @@ After configuring special decoder and rules for remote logs, i have a result:
 
 <img width="3068" height="1366" alt="image" src="https://github.com/user-attachments/assets/2068a865-5482-4d20-ae9b-a27c28592a8c" />
 
-## 2.b
+## 2.b Why specifically are you able to view these logs i.e select two visible logs, explain these logs, and explain why and how you are able to view it on the SIEM
 
 You can view MikroTik router logs in Wazuh SIEM because we established a complete logging pipeline. For example, a warning log like "script,warning TEST MESSAGE" indicates a non-critical event from MikroTik's script subsystem, while an error log like "script,error CONNECTION FAILED" represents a more severe issue requiring attention. These logs are visible because MikroTik sends them via syslog protocol (UDP port 514) to the Wazuh Manager, where custom decoders parse the MikroTik-specific format (extracting fields like severity, program, and message), and custom rules (IDs 100201-100204) evaluate them based on severity levels, generating structured alerts stored in 
 
@@ -70,3 +70,35 @@ You can view MikroTik router logs in Wazuh SIEM because we established a complet
 ```
 
 The alerts become visible in the SIEM Dashboard through Wazuh's indexing pipeline: Filebeat continuously monitors the alerts.json file and ships new events to the Wazuh Indexer (OpenSearch/Elasticsearch), which stores them in time-based indices like `wazuh-alerts-4.x-2026.02.19`. The Wazuh Dashboard queries these indices to display events in real-time under Threat Hunting → Events, where you can filter, search, and analyze them. This architecture enables centralized visibility because it standardizes diverse log formats (MikroTik syslog → structured JSON), applies security rules to detect issues, and provides a searchable interface for security monitoring across your infrastructure—transforming raw network device logs into actionable security intelligence.
+
+# Task 2. Use cases 
+
+The cases I selected:
+
+```
+b. Simulate a brute force attack against your infrastructure and demonstrate how you 
+would detect the attack on each of the devices within your infrastructure. Are you 
+able to detect the attack? If not, ensure you are able to.
+c. Demonstrate how you would use the SIEM to detect existing CVEs within devices in 
+your infrastructure. i.e vulnerability detection. Ensure you remediate at least 1 
+vulnerability on each device and prove this in an updated scan
+```
+
+## b. Bruteforce
+
+### Ubuntu Linux 24.04
+
+I implemented script for bruteforce
+
+<img width="1930" height="342" alt="image" src="https://github.com/user-attachments/assets/96d76d50-40ff-46a2-90d5-b2c0bf5cd1d3" />
+
+Let's execute:
+
+<img width="942" height="570" alt="image" src="https://github.com/user-attachments/assets/5ee23630-07fc-448c-9570-2574c7b91080" />
+
+Bruteforce was detected:
+
+<img width="3088" height="1660" alt="image" src="https://github.com/user-attachments/assets/ddf19e25-f4ee-49c6-b930-cdb4f6feb807" />
+
+### Windows 10
+

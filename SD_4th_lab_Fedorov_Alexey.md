@@ -1,4 +1,4 @@
-<img width="3116" height="1128" alt="image" src="https://github.com/user-attachments/assets/0f86957c-e249-49b2-95c7-697a4c80121d" /><img width="1930" height="342" alt="image" src="https://github.com/user-attachments/assets/4a3f8904-1244-445a-8b4f-86b9bf31b8b4" /># SD Lab 4: SIEM
+# SD Lab 4: SIEM
 
 ## Completed by Fedorov Alexey (tg: @ullibniss)
 
@@ -144,4 +144,48 @@ I think it is possible to fix them with `apt upgrade curl`. And it worked for me
 
 # Part B
 
-I've chosen task 
+I've chosen task 5.c
+
+```
+c. Integrate the SIEM with a WAF and simulate a scenario to test the integration. e.g 
+use of Modsecurity
+```
+
+## 5.c Integrate the SIEM with a WAF and simulate a scenario to test the integration. e.g use of Modsecurity
+
+I downloaded apache2 and modsecurity 
+
+```
+sudo apt install apache2 libapache2-mod-security2 -y
+```
+
+Then, I turned modsecurity on. I used recommened configuration, except the SecRuleEngine mode:
+
+```
+sudo cp /etc/modsecurity/modsecurity.conf-recommended /etc/modsecurity/modsecurity.conf
+sudo sed -i 's/SecRuleEngine DetectionOnly/SecRuleEngine On/' /etc/modsecurity/modsecurity.conf
+```
+
+Next step is to configure Wazuh Agent, to provide it apache logs access:
+
+<img width="1072" height="364" alt="image" src="https://github.com/user-attachments/assets/024c0fc2-f314-425b-8f15-842ca8912fe5" />
+
+Finally, I can make an attack. I've written simple script for attack:
+
+<img width="1072" height="730" alt="image" src="https://github.com/user-attachments/assets/0af82802-b030-4c24-82a1-1988de97fc4e" />
+
+<img width="1640" height="1426" alt="image" src="https://github.com/user-attachments/assets/063a8747-60d7-4946-a2ae-567b1ca75610" />
+
+After attack we can see logs in Wazuh:
+
+<img width="3106" height="1860" alt="image" src="https://github.com/user-attachments/assets/51f3339e-a1d5-470e-bc7f-81315859b714" />
+
+Finally, modsecurity works properly. It detected attack and blocked the following requests.
+
+# References
+
+1) https://documentation.wazuh.com/current/installation-guide/index.html
+2) https://wazuh.com/blog/monitoring-network-devices/
+3) https://learn.microsoft.com/ru-ru/windows-server/storage/file-server/troubleshoot/detect-enable-and-disable-smbv1-v2-v3?tabs=server
+4) https://documentation.wazuh.com/current/user-manual/capabilities/vulnerability-detection/how-it-works.html
+5) https://medium.com/@alexxmacenas/wazuhs-rules-and-decoders-with-modsecurity-waf-5fb8f5aaa6a4

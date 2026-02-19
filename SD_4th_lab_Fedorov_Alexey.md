@@ -41,7 +41,32 @@ So, i installed Wazuh. Now i can open it in browser.
 
 <img width="3104" height="1054" alt="image" src="https://github.com/user-attachments/assets/b7682156-77ab-453c-b4e1-69330e02dd6f" />
 
-Let's connect devices for our SIEM.
+I also connected devices to WAZUH:
 
-### Connecting Ubuntu Linux
+- Ubuntu Linux
+- Windows
+- Mikrotik RouterOS
 
+I connected Ubuntu and Windows using Wazuh Agents:
+
+<img width="3098" height="1152" alt="image" src="https://github.com/user-attachments/assets/35c165dd-b6fd-476d-a081-83b12fba5aab" />
+
+<img width="3074" height="1710" alt="image" src="https://github.com/user-attachments/assets/94baba58-c674-4f7e-8e85-3747d405548f" />
+
+But Mikrotik was connected via remote syslog:
+
+<img width="2460" height="1198" alt="image" src="https://github.com/user-attachments/assets/09a39a0b-d8cf-4c46-985c-29e5a2b732eb" />
+
+After configuring special decoder and rules for remote logs, i have a result:
+
+<img width="3068" height="1366" alt="image" src="https://github.com/user-attachments/assets/2068a865-5482-4d20-ae9b-a27c28592a8c" />
+
+## 2.b
+
+You can view MikroTik router logs in Wazuh SIEM because we established a complete logging pipeline. For example, a warning log like "script,warning TEST MESSAGE" indicates a non-critical event from MikroTik's script subsystem, while an error log like "script,error CONNECTION FAILED" represents a more severe issue requiring attention. These logs are visible because MikroTik sends them via syslog protocol (UDP port 514) to the Wazuh Manager, where custom decoders parse the MikroTik-specific format (extracting fields like severity, program, and message), and custom rules (IDs 100201-100204) evaluate them based on severity levels, generating structured alerts stored in 
+
+```
+/var/ossec/logs/alerts/alerts.json.
+```
+
+The alerts become visible in the SIEM Dashboard through Wazuh's indexing pipeline: Filebeat continuously monitors the alerts.json file and ships new events to the Wazuh Indexer (OpenSearch/Elasticsearch), which stores them in time-based indices like `wazuh-alerts-4.x-2026.02.19`. The Wazuh Dashboard queries these indices to display events in real-time under Threat Hunting → Events, where you can filter, search, and analyze them. This architecture enables centralized visibility because it standardizes diverse log formats (MikroTik syslog → structured JSON), applies security rules to detect issues, and provides a searchable interface for security monitoring across your infrastructure—transforming raw network device logs into actionable security intelligence.

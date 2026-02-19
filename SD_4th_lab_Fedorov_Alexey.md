@@ -1,4 +1,4 @@
-<img width="1930" height="342" alt="image" src="https://github.com/user-attachments/assets/4a3f8904-1244-445a-8b4f-86b9bf31b8b4" /># SD Lab 4: SIEM
+<img width="3116" height="1128" alt="image" src="https://github.com/user-attachments/assets/0f86957c-e249-49b2-95c7-697a4c80121d" /><img width="1930" height="342" alt="image" src="https://github.com/user-attachments/assets/4a3f8904-1244-445a-8b4f-86b9bf31b8b4" /># SD Lab 4: SIEM
 
 ## Completed by Fedorov Alexey (tg: @ullibniss)
 
@@ -71,7 +71,7 @@ You can view MikroTik router logs in Wazuh SIEM because we established a complet
 
 The alerts become visible in the SIEM Dashboard through Wazuh's indexing pipeline: Filebeat continuously monitors the alerts.json file and ships new events to the Wazuh Indexer (OpenSearch/Elasticsearch), which stores them in time-based indices like `wazuh-alerts-4.x-2026.02.19`. The Wazuh Dashboard queries these indices to display events in real-time under Threat Hunting → Events, where you can filter, search, and analyze them. This architecture enables centralized visibility because it standardizes diverse log formats (MikroTik syslog → structured JSON), applies security rules to detect issues, and provides a searchable interface for security monitoring across your infrastructure—transforming raw network device logs into actionable security intelligence.
 
-# Task 2. Use cases 
+# Task 3. Use cases 
 
 The cases I selected:
 
@@ -128,4 +128,20 @@ After manager reboot, scan is started:
 
 <img width="2110" height="132" alt="image" src="https://github.com/user-attachments/assets/7a81d653-cc1b-4f79-a58f-770925c9e665" />
 
+Wazuh made scan. As we can see, there are a lot of vilnerabilities:
 
+<img width="3118" height="1686" alt="image" src="https://github.com/user-attachments/assets/fe1a12c8-12ac-486b-be7d-4f3e03aa55e8" />
+
+The reason is I downloaded stock image and forgot to run `apt upgrade`. Let's check curl vulnerabilities:
+
+<img width="1280" height="280" alt="image" src="https://github.com/user-attachments/assets/934d8949-f1cc-4630-b10a-c606ea442a89" />
+
+I think it is possible to fix them with `apt upgrade curl`. And it worked for me:
+
+<img width="3116" height="1128" alt="image" src="https://github.com/user-attachments/assets/9a9e3ec7-33b2-480c-84fe-e461cd61b5b5" />
+
+<img width="3106" height="724" alt="image" src="https://github.com/user-attachments/assets/5979b285-4822-4014-88bd-dcecca86f254" />
+
+# Part B
+
+I've chosen task 

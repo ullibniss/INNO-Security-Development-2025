@@ -20,8 +20,6 @@ The following assumptions were made about the system during the analysis:
 6. **A6**: Video objects (the actual binary files) are stored in a dedicated object store (e.g., S3-compatible storage).
 7. **A7**: When a user uploads a video, the application server sends a task to the video processing queue. Video upload servers pick up the task, transcode the video into multiple quality levels, and store results in the object store.
 8. **A8**: Internal communication between application servers, database, queue, and upload servers happens over a private network, but is **not encrypted by default** (this is a common design gap we will address).
-9. **A9**: There is an administrator role that can manage users and content.
-10. **A10**: The video processing queue is a message broker (e.g., RabbitMQ or Kafka).
 
 ## 1. Application Decomposition
 
@@ -174,9 +172,7 @@ Key recommendations for the development team:
 - **Authorization**: Apply strict server-side ownership and role checks on every endpoint. Never trust client-supplied user IDs or roles. Use IDOR-resistant patterns.
 - **Input validation**: Use parameterized queries exclusively to prevent SQL injection. Sanitize all user-generated content (comments, video metadata) to prevent XSS.
 - **Encryption in transit**: Enforce HTTPS for all client-facing endpoints. Enable TLS for all internal communication (database, message queue, object store).
-- **Access control on storage**: Use signed, time-limited URLs for video object access. Restrict object store write permissions to upload servers only.
 - **Rate limiting and quotas**: Apply rate limits on uploads, comments, search, and login. Enforce per-user storage quotas. Deploy DDoS protection.
 - **Secure video processing**: Validate uploaded files before transcoding. Run transcoders in sandboxed containers with restricted privileges.
-- **Monitoring and logging**: Implement audit logging for authentication events, content changes, and administrative actions. Monitor for anomalous patterns.
 
-Addressing these issues at the design stage will significantly reduce the attack surface and improve the overall security posture of the platform.
+Addressing these issues at the design stage will reduce the attack surface and improve the overall security posture of the platform.

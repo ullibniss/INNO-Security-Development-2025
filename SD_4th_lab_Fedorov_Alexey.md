@@ -22,6 +22,12 @@ I've chosen `Wazuh` SIEM, because it was recommended.
 
 ![image](https://github.com/user-attachments/assets/e0b5eba9-00b7-4b94-bc0c-a840927de5b7)
 
+Wazuh follows a classic agent-server architecture. Lightweight Wazuh Agents are deployed on monitored endpoints and collect log data, monitor file integrity, detect vulnerabilities, and run active responses. They forward all collected data to the central Wazuh Manager, which is the core processing component — it parses events, applies decoders and rules, correlates alerts, and stores processed data.
+
+For storage and search, Wazuh integrates with the OpenSearch stack (a fork of Elasticsearch). The Manager ships data to OpenSearch Indexer, which indexes and stores all events and alerts. The Wazuh Dashboard (built on OpenSearch Dashboards) provides the web UI for visualization, alert management, compliance reporting, and investigation workflows.
+
+In a lab setup this typically runs as a single-node deployment — Manager, Indexer, and Dashboard all on one server — while production environments can scale each component independently or use a multi-node Indexer cluster for high availability. Agentless monitoring is handled via syslog forwarding to the Manager, since a native agent cannot be installed on such devices.
+
 ## 1.b Provide 3 advantages of open source solutions and how do these vendors actually make money?
 
 # Task 2 - Setup infrastructure

@@ -74,9 +74,7 @@ The following assumptions were made about the system during the analysis:
 
 ## 2. Data Flow Diagrams
 
-The following DFDs use standard notation: rectangles for external entities, circles/rounded shapes for processes, parallel lines for data stores, and arrows for data flows. Trust boundaries are indicated with dashed lines.
-
-### DFD 1: User Authentication & Profile Access
+### 1: User Authentication & Profile Access
 
 <img width="1914" height="958" alt="image" src="https://github.com/user-attachments/assets/c38cc176-51af-46be-abd6-693ffb00a4a7" />
 
@@ -91,7 +89,7 @@ The following DFDs use standard notation: rectangles for external entities, circ
 - Internet ↔ App Server (EP1, EP2, EP3): User input crosses from an untrusted zone into the application.
 - App Server ↔ Database (EP12): Internal boundary between application logic and data store.
 
-### DFD 2: Video Upload & Processing
+### 2: Video Upload & Processing
 
 <img width="1668" height="1296" alt="image" src="https://github.com/user-attachments/assets/d131cf01-6e96-4613-9bc9-439e3650bd6e" />
 
@@ -165,24 +163,6 @@ CVSS scores are estimated using CVSS v3.0 base metrics.
 | T15 | AS6 – Video Objects | Denial of Service | Attacker uploads excessively large or numerous video files to exhaust storage and processing resources. | No file size limit, no upload rate limiting, no per-user quota. | 7.5 (High) | Enforce maximum file size limits, per-user upload quotas, and rate limiting on the upload endpoint. Validate file type before processing. |
 | T16 | AS7 – Comments | Tampering | Attacker modifies or deletes another user's comments. | IDOR on comment deletion/edit endpoint — no ownership check. | 5.3 (Medium) | Enforce that only the comment author (or video owner / admin) can modify or delete a comment. |
 | T17 | AS7 – Comments | Spoofing | Attacker posts comments impersonating another user. | Comment creation endpoint accepts a user ID parameter from the client instead of deriving it from the session. | 6.5 (Medium) | Always derive the comment author from the server-side session/token; never trust client-supplied user IDs. |
-| T18 | AS7 – Comments | Information Disclosure | Comments on private videos are visible to unauthorized users. | Comments endpoint does not check the parent video's visibility / access control. | 5.3 (Medium) | Before returning comments, verify that the requester has access to the associated video. |
-| T19 | AS7 – Comments | Tampering (XSS) | Attacker injects malicious JavaScript via a comment, which executes in other users' browsers. | Comment text is not sanitized before being rendered in the frontend. | 6.1 (Medium) | Sanitize and escape all user input on both server and client side. Implement Content Security Policy (CSP) headers. |
-| T20 | AS8 – Session / Auth Tokens | Spoofing | Attacker steals a session token via XSS or network sniffing and impersonates the user. | Tokens transmitted over unencrypted channels; XSS vulnerabilities allow token theft. | 8.0 (High) | Enforce HTTPS everywhere. Set HttpOnly and Secure flags on cookies. Implement CSP to mitigate XSS. Use short-lived tokens with refresh rotation. |
-| T21 | AS8 – Session / Auth Tokens | Tampering | Attacker forges or modifies a JWT to escalate privileges. | JWT uses a weak signing algorithm (e.g., `none` or HMAC with a guessable secret). | 9.8 (Critical) | Use strong asymmetric signing algorithms (RS256/ES256). Validate token signatures server-side. Never allow `alg: none`. |
-| T22 | AS8 – Session / Auth Tokens | Repudiation | Actions performed with a stolen token cannot be attributed to the real attacker. | Insufficient logging of authentication events and token usage. | 4.3 (Medium) | Log all authentication events with IP addresses and user agents. Implement session audit trails. |
-| T23 | AS9 – System Availability | Denial of Service | Application becomes unavailable due to DDoS attack on the web endpoints. | No rate limiting, no CDN, no DDoS protection in front of application servers. | 7.5 (High) | Deploy a CDN / DDoS mitigation service (e.g., Cloudflare). Implement rate limiting per IP. Use auto-scaling for application servers. |
-| T24 | AS9 – System Availability | Denial of Service | Video processing queue is overwhelmed by a flood of upload requests, blocking legitimate transcoding. | No prioritization or rate limiting on the queue; single queue for all users. | 6.5 (Medium) | Implement per-user rate limits on uploads. Use queue prioritization. Set maximum queue depth with back-pressure mechanisms. |
-| T25 | AS10 – Queue Messages | Tampering | Attacker injects or modifies messages in the video processing queue to trigger malicious transcoding jobs. | Queue interface is not authenticated; internal network is assumed trusted (A8). | 7.5 (High) | Authenticate all queue producers and consumers. Encrypt queue traffic (TLS). Validate message integrity (e.g., HMAC signatures on messages). |
-| T26 | AS10 – Queue Messages | Information Disclosure | Queue messages containing video references or internal paths are intercepted. | Queue communication is unencrypted on the internal network. | 5.3 (Medium) | Enable TLS for all queue communication. Restrict network access to the queue using firewall rules. |
-| T27 | AS11 – Database Integrity | Tampering | Attacker performs SQL injection to modify or delete data. | Application constructs SQL queries using string concatenation with user input. | 9.8 (Critical) | Use parameterized queries / prepared statements exclusively. Employ an ORM. Apply input validation. Run database with least-privilege credentials. |
-| T28 | AS11 – Database Integrity | Information Disclosure | Attacker extracts full database contents via SQL injection. | Same as T27 — SQL injection vulnerability. | 9.8 (Critical) | Same as T27. Additionally, encrypt sensitive columns (e.g., emails). Implement database activity monitoring. |
-| T29 | AS11 – Database Integrity | Denial of Service | Attacker causes database overload via expensive search queries. | Search endpoint allows complex queries without pagination limits or query timeout. | 6.5 (Medium) | Enforce pagination on all list endpoints. Set query timeouts. Use database connection pooling. Limit filter/sort complexity. |
-| T30 | AS12 – Admin Credentials | Spoofing | Attacker gains admin access through compromised admin credentials. | Admin accounts use weak passwords; no MFA; admin panel exposed on the same domain. | 9.1 (Critical) | Enforce strong passwords for admin accounts. Require MFA. Restrict admin panel access by IP whitelist or VPN. Separate admin domain. |
-| T31 | AS12 – Admin Credentials | Elevation of Privilege | Regular user escalates to admin role by manipulating request parameters. | Role stored in client-side token or cookie without server-side verification; or role assignment endpoint is not protected. | 9.8 (Critical) | Store roles server-side. Validate roles on every request. Protect role management endpoints to admin-only access. |
-| T32 | AS6 – Video Objects | Tampering | Malicious video file exploits vulnerability in transcoding software (e.g., FFmpeg) leading to remote code execution on upload servers. | Uploaded files are not validated before being passed to the transcoder. | 8.8 (High) | Validate file headers and magic bytes before processing. Run transcoding in sandboxed environments (containers with restricted privileges). Keep transcoding software up to date. |
-| T33 | AS5 – Video Metadata | Information Disclosure | Enumeration of video IDs reveals hidden videos. | Video IDs are sequential integers, allowing attackers to iterate and discover hidden content. | 5.3 (Medium) | Use non-sequential, non-guessable identifiers (UUIDs) for videos. Return 404 (not 403) for unauthorized video access to prevent enumeration. |
-| T34 | AS3 – User View History | Information Disclosure | View history data is exposed in server logs or analytics pipelines. | Logging includes full request paths with video IDs and user IDs without proper anonymization. | 4.3 (Medium) | Anonymize or pseudonymize user identifiers in logs. Restrict access to log data. Implement data retention policies. |
-| T35 | AS7 – Comments | Denial of Service | Attacker floods comment endpoints with spam, degrading user experience and system performance. | No rate limiting on comment creation; no spam detection. | 5.3 (Medium) | Implement rate limiting on comment creation per user. Add CAPTCHA for rapid successive comments. Deploy basic spam filtering. |
 
 ## Conclusion
 

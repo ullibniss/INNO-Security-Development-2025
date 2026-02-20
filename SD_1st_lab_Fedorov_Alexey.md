@@ -41,11 +41,11 @@ The following assumptions were made about the system during the analysis:
 |----|-------------|-------------|----------------|
 | EP1 | HTTPS Web Interface (Main Page) | The main web application frontend served to users' browsers. | TL1, TL2, TL3, TL4 |
 | EP2 | Login / Registration Endpoint | API endpoint for user authentication and account creation. | TL1 |
-| EP3 | User Profile Endpoint | API endpoint for viewing and editing user profile data. | TL1 (view public), TL2 (edit own) |
+| EP3 | User Profile Endpoint | API endpoint for viewing and editing user profile data. | TL1, TL2  |
 | EP4 | Video Upload Endpoint | API endpoint that accepts video file uploads from authenticated users. | TL2 |
 | EP5 | Video Streaming Endpoint | API endpoint that serves video streams in the requested quality. | TL1, TL2 |
 | EP6 | Video Search Endpoint | API endpoint for searching, filtering, and sorting videos. | TL1, TL2 |
-| EP7 | Comment API Endpoint | API endpoint for creating, viewing, and deleting comments on videos. | TL1 (view), TL2 (create/delete own) |
+| EP7 | Comment API Endpoint | API endpoint for creating, viewing, and deleting comments on videos. | TL1, TL2|
 | EP8 | Video Management Endpoint | API endpoint for deleting videos and changing visibility settings. | TL3, TL4 |
 | EP9 | View History Endpoint | API endpoint for retrieving the authenticated user's viewing history. | TL2 |
 | EP10 | Admin Panel Endpoint | API endpoint / web interface for administrative operations. | TL4 |

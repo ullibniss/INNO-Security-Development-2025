@@ -163,5 +163,30 @@ If service starts to work, the common issue is in system files it tries to creat
 
 ## PART B - SElinux
 
+### 1. Give a short explanation on SElinux
+
+SELinux (Security-Enhanced Linux) is a Mandatory Access Control (MAC) system implemented in the Linux kernel. Originally developed by the NSA and Red Hat, it provides fine-grained access control beyond traditional Unix permissions.
+
+Key Concept:
+
+1) Security Contexts (Labels). Every process, file, and resource has a security context with format:
+
+```
+user:role:type:level
+```
+Example: `system_u:object_r:httpd_sys_content_t:s0`
+
+2) Type Enforcement (TE). Access decisions based on types. A process with type httpd_t can only access files with allowed types (e.g., httpd_sys_content_t).
+3) Policies. Rules defining what types can interact. SELinux denies everything by default unless explicitly allowed by policy.
+4) Operating Modes:
+- Enforcing: Blocks violations
+- Permissive: Logs violations without blocking
+- Disabled: SELinux completely off
+
+SELinux provides defense-in-depth by adding kernel-level MAC on top of traditional DAC, reducing attack surface.
+
+### 2. Deploy a simple webapp or DB on a Linux server
+
+
 
 

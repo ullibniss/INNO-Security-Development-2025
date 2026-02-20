@@ -187,6 +187,93 @@ SELinux provides defense-in-depth by adding kernel-level MAC on top of tradition
 
 ### 2. Deploy a simple webapp or DB on a Linux server
 
+```
+Carry out a stress test on the application and verify the performance of the 
+application on the server. The performance can be reviewed using a benchmark 
+such as Spec benchmark. Take note of the results.
+```
 
+I created 2 pages hosting with apache2: static html, dynamic php page.
 
+<img width="816" height="150" alt="image" src="https://github.com/user-attachments/assets/89c248fd-878a-47b8-b3db-8e14908f26d8" />
 
+For benchmark I will use ApacheBench. 3 tests.
+
+Test 1. Static page load test
+
+<img width="2002" height="712" alt="image" src="https://github.com/user-attachments/assets/aaa68f1c-8b95-4e48-a127-04fd12869a7c" />
+
+Test 2. Dynamic page load test
+
+<img width="1888" height="702" alt="image" src="https://github.com/user-attachments/assets/32b643a1-5754-47b7-ab15-dfcccd934214" />
+
+Test 3. Highload test for static page
+
+<img width="2132" height="692" alt="image" src="https://github.com/user-attachments/assets/f0e8651b-86a3-4dcc-bcd9-15fe97bd7d67" />
+
+the results are:
+
+<img width="1296" height="1414" alt="image" src="https://github.com/user-attachments/assets/bfb5c7ef-1a2c-495e-86ee-9df96f9a2438" />
+
+```
+Install and enable SElinux on the same Linux server
+```
+
+I installed SElinux on Ubuntu, rebooted and has this default settings:
+
+<img width="1070" height="578" alt="image" src="https://github.com/user-attachments/assets/30d94691-5d10-498b-ae59-631a52d2e856" />
+
+I set SElinux to Enforced mode and checked default contexts:
+
+<img width="2696" height="606" alt="image" src="https://github.com/user-attachments/assets/9795009e-7932-4f7d-97dc-da925cb9c6eb" />
+
+```
+Implement a couple of containment policies for the hosted webapp on the server 
+and perform a similar stress test based on similar benchmarks used earlier. 
+```
+
+Firstly, I want to limit apache write permissions to /tmp folder:
+
+```
+sudo setsebool -P httpd_tmp_exec off
+sudo setsebool -P httpd_use_fusefs off
+```
+
+<img width="596" height="398" alt="image" src="https://github.com/user-attachments/assets/b90784cc-c713-4ccc-b2de-089eb420369c" />
+
+Next is restriction of outgoing requests:
+
+```
+sudo setsebool -P httpd_can_network_connect off
+```
+
+<img width="960" height="206" alt="image" src="https://github.com/user-attachments/assets/a4b119fb-fb39-40b5-9d10-8750805a8224" />
+
+Restricting access to home directories:
+
+<img width="794" height="406" alt="image" src="https://github.com/user-attachments/assets/cee1ecde-823c-4d23-aefa-67f6eaec3c52" />
+
+Let's do benchmark and collect result again:
+
+<img width="1262" height="1414" alt="image" src="https://github.com/user-attachments/assets/c01c1f72-ffe0-4e7f-8e8e-87b30cab057f" />
+
+```
+Do you observe any difference in performance?
+```
+
+Yes, there is a measurable performance impact with SELinux enforcing on Ubuntu:
+
+|Benchmark|Baseline|SELinux|Diff|
+|-|-|-|-|
+|Static|3378| 2378.26| -30%~|
+|Dynamic|2420| 2914.75|+17%~|
+|Highload|2461| 2521.05|+2%~|
+
+The benchmark results reveal workload-dependent SELinux performance impacts that differ significantly from typical patterns. Static content shows the expected overhead of -30%, consistent with SELinux's security context checking and label verification penalties on simple file reads. However, dynamic PHP content surprisingly shows a +17% performance improvement with SELinux enforcing, which is atypical and likely attributable to several factors: SELinux's containment policies may have reduced resource contention by preventing Apache from accessing unnecessary system resources (blocked network connections, restricted /tmp access, limited home directory reads), effectively forcing a more focused execution path; additionally, the baseline test may have experienced background noise or cache misses that the enforcing test avoided due to system state differences. The high-load scenario shows minimal impact (+2%), suggesting that under concurrent load, SELinux's overhead becomes negligible relative to network and application bottlenecks. These results demonstrate that SELinux's performance impact is highly workload-specific: while simple operations show overhead from mandatory access control checks, complex applications with restricted policies may actually benefit from reduced system-wide resource contention, and under realistic concurrent loads, the security benefits of containment come at virtually no performance cost.
+
+# References
+
+1) https://gitlab.com/apparmor/apparmor/-/wikis/Documentation
+2) https://httpd.apache.org/docs/2.4/ru/
+3) https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/7/html/selinux_users_and_administrators_guide/index
+4) https://httpd.apache.org/docs/2.4/programs/ab.html

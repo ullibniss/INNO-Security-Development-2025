@@ -105,7 +105,7 @@ The following assumptions were made about the system during the analysis:
 - Internet ↔ App Server: Uploaded file crosses from untrusted user space.
 - App Server ↔ Queue / Database / Object Store: Internal boundaries between components.
 
-### DFD 3: Video Search & Streaming
+### 3: Video Search & Streaming
 
 <img width="1224" height="1164" alt="image" src="https://github.com/user-attachments/assets/a4e00bfd-b2c2-4719-8873-ba0aad564ce1" />
 
@@ -122,7 +122,7 @@ The following assumptions were made about the system during the analysis:
 - Internet ↔ App Server: Search query and streaming request from untrusted user.
 - App Server ↔ Database and App Server ↔ Object Store: Internal boundaries.
 
-### DFD 4: Commenting on a Video
+### 4: Commenting on a Video
 
 <img width="1326" height="716" alt="image" src="https://github.com/user-attachments/assets/d1f05d00-ec77-45d5-89f8-a6946e207e3e" />
 

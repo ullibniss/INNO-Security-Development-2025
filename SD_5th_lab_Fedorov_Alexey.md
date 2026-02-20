@@ -50,7 +50,7 @@ Wazuh is also has settings related to SCA in `ossec.conf`:
 
 There is option `scan_on_start = yes`, so we can see logs on agent restart:
 
-<img width="2160" height="244" alt="image" src="https://github.com/user-attachments/assets/1fe455ae-8936-4e99-90b9-6ab652ce75d7" />
+<img width="2160" height="244" alt="image" src="https://github.com/user-attachments/assets/047b277d-a59f-4d26-af08-5c5465f06671" />
 
 Of course we can see results in Wazuh Dashboard:
 
